@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="color-scheme: dark !important; background: #080808 !important; background-color: #080808 !important;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Trivum — Venture Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #080808;
+    --surface: #111111;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ebe2;
+    --muted: #6b6560;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-line: rgba(201,168,76,0.3);
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: #080808 !important;
+    background-color: #080808 !important;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg) !important;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold-line);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.9), transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* TRIANGLE BG */
+  .triangle-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    opacity: 0;
+    animation: fadeTriangle 2s ease 0.5s forwards;
+  }
+
+  @keyframes fadeTriangle {
+    to { opacity: 1; }
+  }
+
+  .triangle-bg svg {
+    width: 100%; height: 100%;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.8s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(80px, 15vw, 160px);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: slideUp 0.8s ease 1s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-tagline {
+    margin-top: 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(240,235,226,0.6);
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: slideUp 0.8s ease 1.2s forwards;
+  }
+
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    opacity: 0;
+    animation: slideUp 0.8s ease 1.4s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 56px;
+    opacity: 0;
+    animation: slideUp 0.8s ease 1.6s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    border: 1px solid var(--gold-line);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-dim);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { border-color: var(--gold); }
+
+  .btn-arrow { transition: transform 0.3s ease; }
+  .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease 2.2s forwards;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  .scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* SECTION BASE */
+  section {
+    padding: 120px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-eyebrow::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--gold-line);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* ORIGEM */
+  .origem {
+    border-top: 1px solid var(--border);
+  }
+
+  .origem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .origem-text p {
+    font-size: 17px;
+    line-height: 1.8;
+    color: rgba(240,235,226,0.75);
+    margin-bottom: 24px;
+  }
+
+  .origem-text p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .origem-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .triangle-diagram {
+    width: 280px;
+    height: 280px;
+    position: relative;
+  }
+
+  .triangle-diagram svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .node-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+
+  .node-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 400;
+    fill: var(--text);
+  }
+
+  /* MODELO */
+  .modelo { border-top: 1px solid var(--border); }
+
+  .modelo-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 60px;
+    border: 1px solid var(--border);
+  }
+
+  .modelo-card {
+    background: var(--bg);
+    padding: 48px 36px;
+    position: relative;
+    transition: background 0.3s ease;
+  }
+
+  .modelo-card:hover { background: var(--surface); }
+
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: var(--gold-dim);
+    line-height: 1;
+    margin-bottom: 24px;
+    -webkit-text-stroke: 1px var(--gold-line);
+    color: transparent;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(240,235,226,0.55);
+  }
+
+  .card-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .modelo-card:hover .card-bar { transform: scaleX(1); }
+
+  /* PARCERIA */
+  .parceria { border-top: 1px solid var(--border); }
+
+  .parceria-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+  }
+
+  .parceria-side h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .parceria-side h3 em { font-style: italic; color: var(--gold); }
+
+  .parceria-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .parceria-list li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .list-icon {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--gold-line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .list-icon span {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    display: block;
+  }
+
+  .list-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(240,235,226,0.7);
+  }
+
+  .list-text strong { color: var(--text); font-weight: 500; }
+
+  /* EQUITY */
+  .equity { border-top: 1px solid var(--border); }
+
+  .equity-visual {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .equity-chart {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .equity-chart svg { overflow: visible; }
+
+  .equity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .equity-item {
+    padding: 24px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .equity-item:hover { border-color: var(--gold-line); }
+
+  .equity-item-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+  }
+
+  .equity-pct {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .equity-who {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .equity-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(240,235,226,0.55);
+  }
+
+  /* FASES */
+  .fases { border-top: 1px solid var(--border); }
+
+  .fases-timeline {
+    margin-top: 60px;
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .fases-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .fase-item {
+    position: relative;
+    padding: 0 0 48px 48px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+
+  .fase-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .fase-dot {
+    position: absolute;
+    left: -5px;
+    top: 8px;
+    width: 11px; height: 11px;
+    border: 1px solid var(--gold);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fase-dot span {
+    width: 5px; height: 5px;
+    background: var(--gold);
+    display: block;
+  }
+
+  .fase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .fase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  .fase-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+  }
+
+  .fase-duration {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .fase-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(240,235,226,0.55);
+    max-width: 600px;
+  }
+
+  /* CONTATO */
+  .contato {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contato .section-title { margin-bottom: 16px; }
+
+  .contato-sub {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(240,235,226,0.55);
+    margin-bottom: 48px;
+  }
+
+  .contact-box {
+    border: 1px solid var(--border);
+    padding: 48px;
+    background: var(--surface);
+    position: relative;
+  }
+
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 2px;
+    background: var(--gold);
+  }
+
+  .contact-email {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--gold);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 16px;
+    transition: opacity 0.3s ease;
+  }
+
+  .contact-email:hover { opacity: 0.7; }
+
+  .contact-domain {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    section { padding: 80px 24px; }
+    .origem-grid, .modelo-cards, .parceria-layout, .equity-visual { grid-template-columns: 1fr; gap: 40px; }
+    .modelo-cards { gap: 1px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">TRI<span>V</span>UM</a>
+  <span class="nav-tag">Venture Studio</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="triangle-bg">
+    <svg viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="300,60 540,480 60,480" stroke="rgba(201,168,76,0.06)" stroke-width="1" fill="rgba(201,168,76,0.02)"/>
+      <polygon points="300,100 510,460 90,460" stroke="rgba(201,168,76,0.04)" stroke-width="1" fill="none"/>
+      <polygon points="300,140 480,440 120,440" stroke="rgba(201,168,76,0.03)" stroke-width="1" fill="none"/>
+      <polygon points="300,180 450,420 150,420" stroke="rgba(201,168,76,0.025)" stroke-width="1" fill="none"/>
+      <circle cx="300" cy="60" r="3" fill="rgba(201,168,76,0.3)"/>
+      <circle cx="540" cy="480" r="3" fill="rgba(201,168,76,0.3)"/>
+      <circle cx="60" cy="480" r="3" fill="rgba(201,168,76,0.3)"/>
+    </svg>
+  </div>
+
+  <div class="hero-label">Venture Studio · trivum.app</div>
+  <h1 class="hero-title">TRI<em>V</em>UM</h1>
+  <p class="hero-tagline">Três forças. Um negócio.</p>
+  <p class="hero-sub">Onde conhecimento vira produto</p>
+
+  <div class="hero-cta">
+    <a href="javascript:void(0)" onclick="document.getElementById('modelo').scrollIntoView({behavior:'smooth'})" class="btn-primary">
+      Conheça o modelo
+      <span class="btn-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</div>
+
+<!-- ORIGEM -->
+<section class="origem" id="origem">
+  <div class="origem-grid">
+    <div class="origem-text reveal">
+      <div class="section-eyebrow">A origem do nome</div>
+      <h2 class="section-title">Onde três<br><em>caminhos</em> se encontram</h2>
+      <p>Na Roma antiga, <strong>trivium</strong> era o cruzamento onde três estradas se uniam. Era o ponto de maior movimento, troca e geração de valor de uma cidade. Não era um lugar de passagem. Era onde as coisas aconteciam.</p>
+      <p>No Trivum, três caminhos se encontram: o <strong>conhecimento do especialista</strong>, a <strong>tecnologia do studio</strong> e o <strong>mercado</strong> que está esperando uma solução. Quando os três se alinham, um novo negócio nasce.</p>
+    </div>
+
+    <div class="origem-visual reveal">
+      <div class="triangle-diagram">
+        <svg viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Triangle -->
+          <polygon points="140,20 260,220 20,220" stroke="rgba(201,168,76,0.4)" stroke-width="1" fill="rgba(201,168,76,0.03)"/>
+
+          <!-- Nodes -->
+          <circle cx="140" cy="20" r="6" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+          <circle cx="260" cy="220" r="6" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+          <circle cx="20" cy="220" r="6" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+
+          <!-- Center dot -->
+          <circle cx="140" cy="153" r="4" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="140" cy="153" r="12" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+
+          <!-- Labels top -->
+          <text x="140" y="8" text-anchor="middle" class="node-label" font-family="'DM Mono', monospace" font-size="9" fill="rgba(201,168,76,0.7)" letter-spacing="2">ESPECIALISTA</text>
+
+          <!-- Labels bottom left -->
+          <text x="12" y="248" text-anchor="middle" class="node-label" font-family="'DM Mono', monospace" font-size="9" fill="rgba(201,168,76,0.7)" letter-spacing="2">TECNOLOGIA</text>
+
+          <!-- Labels bottom right -->
+          <text x="268" y="248" text-anchor="middle" class="node-label" font-family="'DM Mono', monospace" font-size="9" fill="rgba(201,168,76,0.7)" letter-spacing="2">MARKETING</text>
+
+          <!-- Center label -->
+          <text x="140" y="178" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="13" fill="rgba(240,235,226,0.5)" letter-spacing="3">TRIVUM</text>
+
+          <!-- Dashed lines to center -->
+          <line x1="140" y1="26" x2="140" y2="141" stroke="rgba(201,168,76,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+          <line x1="254" y1="214" x2="146" y2="157" stroke="rgba(201,168,76,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+          <line x1="26" y1="214" x2="134" y2="157" stroke="rgba(201,168,76,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELO -->
+<section class="modelo" id="modelo">
+  <div class="section-eyebrow reveal">Como funciona</div>
+  <h2 class="section-title reveal">O modelo<br><em>Trivum</em></h2>
+
+  <div class="modelo-cards">
+    <div class="modelo-card reveal">
+      <div class="card-bar"></div>
+      <div class="card-num">01</div>
+      <h3 class="card-title">Você traz o conhecimento</h3>
+      <p class="card-desc">Você domina um nicho de mercado. Conhece os problemas reais, fala a língua do cliente, entende o que falta. Esse é o ativo mais valioso do processo.</p>
+    </div>
+    <div class="modelo-card reveal">
+      <div class="card-bar"></div>
+      <div class="card-num">02</div>
+      <h3 class="card-title">Nós construímos o produto</h3>
+      <p class="card-desc">O Trivum entra com o desenvolvimento completo do SaaS e com a estratégia de marketing. Do MVP ao lançamento, cuidamos da parte técnica e de crescimento.</p>
+    </div>
+    <div class="modelo-card reveal">
+      <div class="card-bar"></div>
+      <div class="card-num">03</div>
+      <h3 class="card-title">Crescemos juntos</h3>
+      <p class="card-desc">A receita gerada pelo SaaS é dividida entre o especialista e o Trivum. É uma parceria real, com alinhamento de longo prazo e interesse genuíno no sucesso de cada produto.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PARCERIA -->
+<section class="parceria" id="parceria">
+  <div class="section-eyebrow reveal">A parceria</div>
+  <h2 class="section-title reveal">O que cada um<br><em>traz</em> para a mesa</h2>
+
+  <div class="parceria-layout">
+    <div class="parceria-side reveal">
+      <h3>O <em>especialista</em> entra com</h3>
+      <ul class="parceria-list">
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Domínio do nicho</strong> — conhecimento profundo do mercado, dos clientes e dos problemas reais que precisam de solução.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Presença pública</strong> — o especialista é a face visível do produto. Aparece no conteúdo, nas campanhas e na comunicação com o mercado. Sua autoridade é o principal ativo de aquisição.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Validação de mercado</strong> — participação ativa na fase de descoberta, com acesso à sua rede e audiência.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Co-investimento em marketing</strong> — divisão dos custos de aquisição com base em plano aprovado em conjunto.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Engajamento contínuo</strong> — presença ativa no desenvolvimento do produto e na relação com os primeiros clientes.</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="parceria-side reveal">
+      <h3>O <em>Trivum</em> entra com</h3>
+      <ul class="parceria-list">
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Desenvolvimento completo</strong> — toda a engenharia do produto, do MVP ao lançamento, por conta do studio.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Estratégia de marketing</strong> — posicionamento, aquisição, funil e crescimento, com foco em receita recorrente.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Estrutura operacional</strong> — processos, métricas, ferramentas e suporte para escalar o negócio com consistência.</div>
+        </li>
+        <li>
+          <div class="list-icon"><span></span></div>
+          <div class="list-text"><strong>Visão de portfólio</strong> — experiência em empreendedorismo digital e construção de produtos que geram valor real.</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- EQUITY -->
+<section class="equity" id="equity">
+  <div class="section-eyebrow reveal">Divisão de receita</div>
+  <h2 class="section-title reveal">Uma parceria<br><em>real</em></h2>
+
+  <div class="equity-visual">
+    <div class="equity-chart reveal">
+      <svg width="260" height="260" viewBox="0 0 260 260">
+        <defs>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#c9a84c;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#a07830;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <!-- Background circle -->
+        <circle cx="130" cy="130" r="110" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="20"/>
+        <!-- Trivum arc (50%) -->
+        <circle cx="130" cy="130" r="110"
+          fill="none"
+          stroke="url(#goldGrad)"
+          stroke-width="20"
+          stroke-dasharray="345.6 345.6"
+          stroke-dashoffset="0"
+          stroke-linecap="butt"
+          transform="rotate(-90 130 130)"
+          opacity="0.9"/>
+        <!-- Specialist arc (50%) -->
+        <circle cx="130" cy="130" r="110"
+          fill="none"
+          stroke="rgba(255,255,255,0.08)"
+          stroke-width="20"
+          stroke-dasharray="345.6 345.6"
+          stroke-dashoffset="-345.6"
+          stroke-linecap="butt"
+          transform="rotate(-90 130 130)"/>
+        <!-- Center text -->
+        <text x="130" y="118" text-anchor="middle" font-family="'Cormorant Garamond', serif" font-size="42" font-weight="300" fill="#c9a84c">50%</text>
+        <text x="130" y="142" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="rgba(240,235,226,0.6)" letter-spacing="2">ESPECIALISTA</text>
+        <text x="130" y="162" text-anchor="middle" font-family="'DM Mono', monospace" font-size="9" fill="rgba(240,235,226,0.2)" letter-spacing="2">· 50% TRIVUM</text>
+      </svg>
+    </div>
+
+    <div class="equity-details reveal">
+      <div class="equity-item" style="border-color: var(--gold-line);">
+        <div class="equity-item-bar"></div>
+        <div class="equity-pct">50%</div>
+        <div class="equity-who">Especialista Parceiro</div>
+        <div class="equity-desc">Metade de tudo que o produto gerar é seu. Para sempre. Você entra com o que nenhum investidor consegue comprar: o conhecimento real do mercado e a autoridade para comunicá-lo.</div>
+      </div>
+      <div class="equity-item">
+        <div class="equity-item-bar" style="background: rgba(240,235,226,0.15);"></div>
+        <div class="equity-pct" style="color: var(--text); opacity: 0.45;">50%</div>
+        <div class="equity-who">Trivum Studio</div>
+        <div class="equity-desc">Referente ao retorno sobre o desenvolvimento completo, a estratégia de marketing e a operação do produto ao longo do tempo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FASES -->
+<section class="fases" id="fases">
+  <div class="section-eyebrow reveal">O processo</div>
+  <h2 class="section-title reveal">Da ideia ao<br><em>produto</em> no mercado</h2>
+
+  <div class="fases-timeline">
+    <div class="fase-item">
+      <div class="fase-dot"><span></span></div>
+      <div class="fase-header">
+        <span class="fase-num">01</span>
+        <span class="fase-name">Prospecção e triagem</span>
+        <span class="fase-duration">1–2 semanas</span>
+      </div>
+      <p class="fase-desc">Primeiro contato, avaliação do nicho, do especialista e do potencial do produto. Decisão conjunta de avançar ou não.</p>
+    </div>
+
+    <div class="fase-item">
+      <div class="fase-dot"><span></span></div>
+      <div class="fase-header">
+        <span class="fase-num">02</span>
+        <span class="fase-name">Validação de mercado</span>
+        <span class="fase-duration">3–4 semanas</span>
+      </div>
+      <p class="fase-desc">Entrevistas com potenciais clientes, landing page de espera e meta de pré-cadastros antes de qualquer linha de código ser escrita.</p>
+    </div>
+
+    <div class="fase-item">
+      <div class="fase-dot"><span></span></div>
+      <div class="fase-header">
+        <span class="fase-num">03</span>
+        <span class="fase-name">Contrato e estrutura</span>
+        <span class="fase-duration">2–3 semanas</span>
+      </div>
+      <p class="fase-desc">Formalização da parceria, definição de equity, vesting, propriedade intelectual e plano de marketing aprovado em conjunto.</p>
+    </div>
+
+    <div class="fase-item">
+      <div class="fase-dot"><span></span></div>
+      <div class="fase-header">
+        <span class="fase-num">04</span>
+        <span class="fase-name">Construção do MVP</span>
+        <span class="fase-duration">8–12 semanas</span>
+      </div>
+      <p class="fase-desc">Desenvolvimento iterativo com testes reais, feedback de early adopters e ajustes antes do lançamento oficial.</p>
+    </div>
+
+    <div class="fase-item">
+      <div class="fase-dot"><span></span></div>
+      <div class="fase-header">
+        <span class="fase-num">05</span>
+        <span class="fase-name">Lançamento e crescimento</span>
+        <span class="fase-duration">Contínuo</span>
+      </div>
+      <p class="fase-desc">Execução do plano de marketing, gestão de métricas, evolução do produto e expansão de funcionalidades com base nos dados reais.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section class="contato" id="contato">
+  <div class="section-eyebrow reveal" style="justify-content: center;">
+    <span style="max-width: 40px; height: 1px; background: var(--gold-line); display: block;"></span>
+    Vamos conversar
+    <span style="max-width: 40px; height: 1px; background: var(--gold-line); display: block;"></span>
+  </div>
+  <h2 class="section-title reveal">Seu conhecimento<br>merece virar um <em>produto</em></h2>
+  <p class="contato-sub reveal">Se você domina um nicho e vê uma oportunidade real de resolver um problema com tecnologia, o Trivum pode ser o parceiro que faltava.</p>
+
+  <div class="contact-box reveal">
+    <a href="mailto:contato@trivum.app" class="contact-email">contato@trivum.app</a>
+    <span class="contact-domain">trivum.app · @trivum.app</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">TRI<span>V</span>UM</div>
+  <div class="footer-copy">© 2026 Trivum Venture Studio · @trivum.app</div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '14px';
+      cursor.style.height = '14px';
+      ring.style.width = '50px';
+      ring.style.height = '50px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '8px';
+      cursor.style.height = '8px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // SCROLL REVEAL
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal, .fase-item').forEach(el => observer.observe(el));
+
+  // SMOOTH NAV
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href && href.length > 1) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
