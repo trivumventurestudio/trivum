@@ -11,6 +11,7 @@
 |---|---|---|---|---|
 | Criação | 2026-05-17 | 1.0 | PRD inicial gerado via create-brownfield-prd | Morgan (@pm) |
 | Revisão | 2026-05-17 | 1.1 | C1: Story 1.6 IV3 clarificado — Firebase Client SDK direto (não Next.js API). S1: Story 1.11 adicionada (/dashboard/settings MVP). | Morgan (@pm) |
+| Revisão | 2026-05-17 | 1.2 | C1: Versão Next.js atualizada 15 → 16 (package.json: 16.2.6). | Morgan (@pm) |
 
 ---
 
@@ -21,7 +22,7 @@
 **Analysis Source:** IDE-based analysis + documentação interna dos fundadores (`brief.md`, `trivum_erp_spec.md`)
 
 **Current Project State:**
-Trivum Studio possui landing page pública Next.js 15 (App Router) deployed em Firebase App Hosting no domínio `trivum.app`. Stack atual: Next.js + Firebase App Hosting + Tailwind CSS. Identidade visual dark premium (`#111111`, dourado `#c9a84c`) definida. Sem formulário de captação estruturado, sem dashboard, sem banco de dados — leads chegam por WhatsApp/Instagram/e-mail sem rastreabilidade.
+Trivum Studio possui landing page pública Next.js 16 (App Router) deployed em Firebase App Hosting no domínio `trivum.app`. Stack atual: Next.js + Firebase App Hosting + Tailwind CSS. Identidade visual dark premium (`#111111`, dourado `#c9a84c`) definida. Sem formulário de captação estruturado, sem dashboard, sem banco de dados — leads chegam por WhatsApp/Instagram/e-mail sem rastreabilidade.
 
 ### 1.2 Available Documentation
 
@@ -144,7 +145,7 @@ Referência de qualidade: metrify.com.br
 | Camada | Tecnologia | Versão / Nota |
 |---|---|---|
 | Language | TypeScript | Já em uso |
-| Framework | Next.js | 15, App Router |
+| Framework | Next.js | 16, App Router |
 | Styling | Tailwind CSS | Já em uso |
 | Auth | Firebase Auth | E-mail + senha |
 | Database | Firestore (NoSQL) | Firebase Spark tier |
@@ -200,7 +201,7 @@ lib/
 
 | Risco | Impacto | Mitigação |
 |---|---|---|
-| Firebase App Hosting + Next.js 15 server actions | Alto | Validar build de produção na semana 1 |
+| Firebase App Hosting + Next.js 16 server actions | Alto | Validar build de produção na semana 1 |
 | Firestore Security Rules mal configuradas expõem PII | Alto | Revisão com `@data-engineer` antes de deploy |
 | Drag-and-drop com Server Components | Médio | Isolar kanban como Client Component; usar `@dnd-kit/core` |
 | Fricção no formulário reduz conversão | Alto | Teste com 5 especialistas antes do lançamento |
