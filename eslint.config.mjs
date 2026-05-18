@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Framework files (CommonJS, não são código do projeto)
+    ".aiox-core/**",
+    ".claude/**",
+    "node_modules/**",
   ]),
 ]);
 
